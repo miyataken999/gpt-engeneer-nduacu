@@ -1,0 +1,51 @@
+@startuml
+participant "User" as user
+participant "ProductController" as controller
+participant "Product" as product
+participant "Database" as database
+
+user -> controller: GET /products
+controller -> product: all()
+product -> database: select * from products
+database -> product: products
+product -> controller: products
+controller -> user: products
+
+user -> controller: GET /products/create
+controller -> user: create form
+
+user -> controller: POST /products
+controller -> product: create(name, description, price)
+product -> database: insert into products (name, description, price)
+database -> product: id
+product -> controller: id
+controller -> user: redirect to /products
+
+user -> controller: GET /products/{id}
+controller -> product: find(id)
+product -> database: select * from products where id = {id}
+database -> product: product
+product -> controller: product
+controller -> user: product
+
+user -> controller: GET /products/{id}/edit
+controller -> product: find(id)
+product -> database: select * from products where id = {id}
+database -> product: product
+product -> controller: product
+controller -> user: edit form
+
+user -> controller: PATCH /products/{id}
+controller -> product: update(name, description, price)
+product -> database: update products set name = {name}, description = {description}, price = {price} where id = {id}
+database -> product: id
+product -> controller: id
+controller -> user: redirect to /products
+
+user -> controller: DELETE /products/{id}
+controller -> product: delete(id)
+product -> database: delete from products where id = {id}
+database -> product: id
+product -> controller: id
+controller -> user: redirect to /products
+@enduml
